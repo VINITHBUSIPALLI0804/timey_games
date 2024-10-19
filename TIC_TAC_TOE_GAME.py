@@ -1,37 +1,29 @@
-# tic_tac_toe_pygame.py
-
 import pygame
 import sys
 
-# Initialize Pygame
 pygame.init()
 
-# Constants
 WIDTH, HEIGHT = 300, 300
 LINE_WIDTH = 10
 BOARD_SIZE = 3
 SPACE_SIZE = WIDTH // BOARD_SIZE
 FONT_SIZE = 24
 
-# Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
-# Create the screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tic Tac Toe")
 font = pygame.font.Font(None, FONT_SIZE)
 
-# Initialize the board
 board = [[" " for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
 current_player = "X"
 game_over = False
 winner = None
 
 def draw_board():
-    # Draw the grid
     for row in range(1, BOARD_SIZE):
         pygame.draw.line(screen, BLACK, (0, row * SPACE_SIZE), (WIDTH, row * SPACE_SIZE), LINE_WIDTH)
         pygame.draw.line(screen, BLACK, (row * SPACE_SIZE, 0), (row * SPACE_SIZE, HEIGHT), LINE_WIDTH)
