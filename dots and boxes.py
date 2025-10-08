@@ -1,47 +1,45 @@
 import pygame
 import sys
 
-# Initialize Pygame
 pygame.init()
 
-# Screen settings
+
 WIDTH, HEIGHT = 600, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Dots and Boxes")
 
-# Colors
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (220, 20, 60)
 BLUE = (65, 105, 225)
 GRAY = (200, 200, 200)
 
-# Grid settings
-ROWS, COLS = 5, 5  # Number of dots per row and column
+
+ROWS, COLS = 5, 5 
 DOT_RADIUS = 6
-DOT_SPACING = 100  # pixels between dots
+DOT_SPACING = 100  
 START_X, START_Y = 50, 50
 
-# Player colors
 PLAYER_COLORS = [RED, BLUE]
 
-# Initialize line and box data structures
+
 horizontal_lines = [[False] * (COLS - 1) for _ in range(ROWS)]
 vertical_lines = [[False] * COLS for _ in range(ROWS - 1)]
-boxes = [[-1] * (COLS - 1) for _ in range(ROWS - 1)]  # -1 = unclaimed, else player index
+boxes = [[-1] * (COLS - 1) for _ in range(ROWS - 1)]  
 
 font = pygame.font.SysFont(None, 36)
 
 def draw_board():
     screen.fill(WHITE)
-    # Draw dots
+   
     for row in range(ROWS):
         for col in range(COLS):
             x = START_X + col * DOT_SPACING
             y = START_Y + row * DOT_SPACING
             pygame.draw.circle(screen, BLACK, (x, y), DOT_RADIUS)
 
-    # Draw horizontal lines
+
     for row in range(ROWS):
         for col in range(COLS - 1):
             x1 = START_X + col * DOT_SPACING
@@ -53,7 +51,7 @@ def draw_board():
                 pygame.draw.line(screen, GRAY,
                                  (x1, y1), (x1 + DOT_SPACING, y1), 2)
 
-    # Draw vertical lines
+
     for row in range(ROWS - 1):
         for col in range(COLS):
             x1 = START_X + col * DOT_SPACING
@@ -65,7 +63,7 @@ def draw_board():
                 pygame.draw.line(screen, GRAY,
                                  (x1, y1), (x1, y1 + DOT_SPACING), 2)
 
-    # Draw boxes
+   
     for row in range(ROWS - 1):
         for col in range(COLS - 1):
             if boxes[row][col] != -1:
@@ -76,8 +74,7 @@ def draw_board():
                 
 def check_complete_box(row, col, player):
     completed = False
-    # Check all boxes adjacent to the line and claim if complete.
-    # Horizontal line check
+  
     if row > 0 and all([horizontal_lines[row][col], horizontal_lines[row-1][col],
                        vertical_lines[row-1][col], vertical_lines[row-1][col+1]]):
         if boxes[row-1][col] == -1:
@@ -88,7 +85,7 @@ def check_complete_box(row, col, player):
         if boxes[row][col] == -1:
             boxes[row][col] = player
             completed = True
-    # Vertical line check
+ 
     if col > 0 and all([vertical_lines[row][col], vertical_lines[row][col-1],
                       horizontal_lines[row][col-1], horizontal_lines[row+1][col-1]]):
         if boxes[row][col-1] == -1:
@@ -111,7 +108,7 @@ def update_score():
 
 def get_line_clicked(pos):
     x, y = pos
-    # Check near horizontal lines
+ 
     for row in range(ROWS):
         for col in range(COLS - 1):
             x1 = START_X + col * DOT_SPACING
@@ -119,7 +116,7 @@ def get_line_clicked(pos):
             if (x1 - 10 <= x <= x1 + DOT_SPACING + 10) and (y1 - 10 <= y <= y1 + 10):
                 if not horizontal_lines[row][col]:
                     return ('h', row, col)
-    # Check near vertical lines
+    
     for row in range(ROWS - 1):
         for col in range(COLS):
             x1 = START_X + col * DOT_SPACING
@@ -136,7 +133,7 @@ def main():
 
     while running:
         draw_board()
-        # Display scores and turn info
+     
         score_text = font.render(f"Red: {scores[0]}    Blue: {scores[1]}", True, BLACK)
         turn_text = font.render(f"Turn: {'Red' if current_player == 0 else 'Blue'}", True, BLACK)
         screen.blit(score_text, (50, HEIGHT - 80))
@@ -157,7 +154,6 @@ def main():
                     else:
                         vertical_lines[row][col] = current_player + 1
 
-                    # Check if box(es) completed - if yes, same player gets extra turn
                     if check_complete_box(row, col, current_player):
                         scores = update_score()
                     else:
@@ -165,11 +161,9 @@ def main():
 
                     scores = update_score()
 
-        # Check if all boxes filled (game over)
         if sum(scores) == (ROWS - 1) * (COLS - 1):
             running = False
 
-    # Game over display
     screen.fill(WHITE)
     draw_board()
     scores = update_score()
